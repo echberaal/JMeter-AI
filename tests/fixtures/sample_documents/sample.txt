@@ -1,0 +1,47 @@
+# E-Commerce Login and Search Test Scenario
+
+## Environment
+- Application URL: https://shop.example.com
+- Environment: Staging
+- Browser: Chrome 120
+
+## Authentication
+Users authenticate via a login form at /auth/login.
+Credentials are provided in a CSV file (username, password).
+After successful login, the server returns a session cookie named JSESSIONID.
+
+## Test Flow
+
+### Transaction 1: Login
+1. Navigate to the homepage at https://shop.example.com/
+2. Click on "Sign In" link which navigates to /auth/login
+3. Submit login form with POST to /auth/login
+   - Content-Type: application/x-www-form-urlencoded
+   - Body: username={username}&password={password}
+   - Expected: 302 redirect to /dashboard
+4. Follow redirect to GET /dashboard
+   - Expected: 200 OK with welcome message
+
+### Transaction 2: Search Products
+1. Navigate to /products/search
+   - Expected: 200 OK, search page loads
+2. Submit search with GET /api/products?q={search_term}&page=1
+   - Header: Accept: application/json
+   - Expected: 200 OK with JSON array of products
+3. Click on first product: GET /products/{product_id}
+   - Expected: 200 OK with product details page
+
+### Transaction 3: Logout
+1. Click logout: POST /auth/logout
+   - Expected: 302 redirect to homepage
+   - Session cookie should be invalidated
+
+## Variables
+- username: test user login (from CSV)
+- password: test user password (from CSV, sensitive)
+- search_term: product search keyword (from CSV)
+- product_id: extracted from search results JSON (dynamic)
+
+## Think Times
+- Between transactions: 3 seconds
+- Between steps within a transaction: 1 second
