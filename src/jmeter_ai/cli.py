@@ -31,13 +31,7 @@ def main() -> None:
     type=click.Path(path_type=Path),
     help="Path for the output JSON file.",
 )
-@click.option(
-    "--pretty",
-    is_flag=True,
-    default=False,
-    help="Pretty-print the output JSON.",
-)
-def extract(file: Path, output: Path, pretty: bool) -> None:
+def extract(file: Path, output: Path) -> None:
     """Extract a test scenario from a document (Stage 1)."""
     try:
         scenario = asyncio.run(_run_extraction(file))
@@ -50,9 +44,8 @@ def extract(file: Path, output: Path, pretty: bool) -> None:
 
     # Serialize
     output.parent.mkdir(parents=True, exist_ok=True)
-    indent = 2 if pretty else None
     output.write_text(
-        json.dumps(scenario.model_dump(mode="json"), indent=indent, default=str),
+        json.dumps(scenario.model_dump(mode="json"), default=str),
         encoding="utf-8",
     )
 
